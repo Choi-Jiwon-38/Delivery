@@ -28,7 +28,8 @@
       파일 등록
       <br />
       S/N : <input type="input" name="sn" size="50" value="1111" />
-      <input type="file" id="filePath" onchange="onChangeFile(this)" />
+      <br />
+      File : <input type="file" name="file" />
       <br />
       <input type="submit" value="등록하기" />
       <br />
@@ -43,12 +44,5 @@
       <br />
     </form>
   </body>
-  <script>
-    async function onChangeFile(input) {
-      const file = input.files[0];
-      const buffer = await file.arrayBuffer();
-      input.value = buffer;
-    }
-  </script>
 </html>
 
