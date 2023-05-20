@@ -58,6 +58,22 @@ class Delivery extends Contract {
     await ctx.stub.putState(sn, Buffer.from(JSON.stringify(delivery)));
   }
 
+  async AddIPFSHash(ctx, sn, hash) {
+    console.info("============= START : Add IPFS Hash  ===========");
+    let deliveryAsBytes = await ctx.stub.getState(sn);
+    if (!deliveryAsBytes || deliveryAsBytes.length === 0) {
+      throw new Error(`${sn} does not exist --> cannot add IPFS Hash!`);
+    
+    delivery = JSON.parse(deliveryAsBytes.toString());
+    if (delivery.hash) {
+      console.info(`hash value(${delivery}) is replaced new hash value(${hash})`);
+    } else {
+      console.info(`new hash value(${hash}) is added`);
+    }
+    delivery.hash = hash;
+    console.info("============= END : Add IPFS Hash  ===========");
+  }
+
   async traceKey(ctx, key) {
     let historyIter = await ctx.stub.getHistoryForKey(key);
     let results = [];
