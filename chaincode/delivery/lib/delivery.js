@@ -61,17 +61,33 @@ class Delivery extends Contract {
   async AddIPFSHash(ctx, sn, hash) {
     console.info("============= START : Add IPFS Hash  ===========");
     let deliveryAsBytes = await ctx.stub.getState(sn);
-    if (!deliveryAsBytes || deliveryAsBytes.length === 0) {
+    if (!deliveryAsBytes || deliveryAsBytes.length === 0)
       throw new Error(`${sn} does not exist --> cannot add IPFS Hash!`);
     
     delivery = JSON.parse(deliveryAsBytes.toString());
     if (delivery.hash) {
-      console.info(`hash value(${delivery}) is replaced new hash value(${hash})`);
+      console.info(`hash value(${delivery.hash}) is replaced new hash value(${hash})`);
     } else {
       console.info(`new hash value(${hash}) is added`);
     }
     delivery.hash = hash;
     console.info("============= END : Add IPFS Hash  ===========");
+  }
+
+  async DeleteIPFSHash(ctx, sn, hash) {
+    console.info("============= START : Delete IPFS Hash  ===========");
+    let deliveryAsBytes = await ctx.stub.getState(sn);
+    if (!deliveryAsBytes || deliveryAsBytes.length === 0)
+      throw new Error(`${sn} does not exist --> nothing to delete IPFS Hash!`);
+
+    delivery = JSON.parse(deliveryAsBytes.toString());
+    if (delivery.hash) {
+      console.info(`hash value(${delivery.hash}) is deleted by function`);
+    } else {
+      console.info('already undefined -->  nothing to delete IPFS Hash!');
+    }
+    delivery.hash = undefined;
+    console.info("============= END : Delete IPFS Hash  ===========");
   }
 
   async traceKey(ctx, key) {
