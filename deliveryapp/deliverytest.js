@@ -4,12 +4,35 @@ const { Gateway, Wallets } = require('fabric-network');
 const path = require('path');
 const fs = require('fs');
 
+const { create } = require('ipfs-http-client');
+const ipfs = create();
+
 var http = require('http');
 var formidable = require('formidable');
 var url = require("url")
 var request = require("request");
-var userid = 'appUser'
+var userid = 'appUser';
+var file;
 
+
+async function uploadFile(file) {
+    const fileAdded = await ipfs.add(file);
+    if (fileAdded.path != '') {
+	return fileAdded.path;
+    } else {
+	console.log('Could not upload the file to ipfs network');
+    }
+}
+
+function getImage(hash) {
+    var strWindowFeatures =
+	'location=yes, height=570, width=520, scrollbars=yes, status=yes';
+    window.open(
+	'http://localhost:8000/ipfs/' + hash,
+	'_blank',
+	strWindowFeatures,
+    )
+}
 
 async function AddNewDeliverer(userid, sn, user) {
 
@@ -150,7 +173,26 @@ async function gateWayPage(req, res) {
 			}
 			return res.end();
 		}
-   } else {
+   } else if (req.url.startsWith('/uploadFile')) {
+	var form = new formidable.IncomingForm();
+	form.parse(req, async function (err, fields, files) {
+	    let sn = fields.sn;
+	    let user = fields.userid;
+
+	    if (sn == undefined || sn == "") {
+	        res.write('sn error: sn is missing');
+	    	return res.end();
+	    }
+	    if (filePath == undefined || filePath == '') {
+	        res.write('file error: file is missing');
+	        return res.end();
+	    }
+	    const { cid } = await ipfs.add(file);
+	    // add more code...
+	    res.write(cid);
+	    return res.end();
+	});
+   } else  {
 
       var fname = "." + url.parse(req.url).pathname;
       if (url.parse(req.url).pathname == "/")

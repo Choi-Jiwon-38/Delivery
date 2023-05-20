@@ -18,7 +18,8 @@
         "fabric-ca-client": "^2.2.4",
         "fabric-network": "^2.2.4",
         "formidable": "^2.1.1",
-        "ipfs-http-client": "^60.0.0",
+        "ipfs-http-client": "^56.0.2",
+        "nvm": "^0.0.4",
         "request": "^2.88.2"
     },
     "devDependencies": {
