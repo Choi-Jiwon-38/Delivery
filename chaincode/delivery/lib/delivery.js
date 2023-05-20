@@ -33,6 +33,7 @@ class Delivery extends Contract {
     if (!deliveryAsBytes || deliveryAsBytes.length === 0) {
       delivery.sn = sn;
       delivery.deliverer = [cur];
+      delivery.hash = undefined;
       delivery.docType = "delivery";
     } else {
       delivery = JSON.parse(deliveryAsBytes.toString());
@@ -54,6 +55,7 @@ class Delivery extends Contract {
     let delivery = {};
     delivery.sn = sn;
     delivery.deliverer = [cur];
+    delivery.hash = undefined;
     delivery.docType = "delivery";
     await ctx.stub.putState(sn, Buffer.from(JSON.stringify(delivery)));
   }
