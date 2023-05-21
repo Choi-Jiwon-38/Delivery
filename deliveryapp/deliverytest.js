@@ -17,25 +17,6 @@ var request = require("request");
 var userid = 'appUser';
 
 
-async function uploadFile(file) {
-    const fileAdded = await ipfs.add(file);
-    if (fileAdded.path != '') {
-	return fileAdded.path;
-    } else {
-	console.log('Could not upload the file to ipfs network');
-    }
-}
-
-function getImage(hash) {
-    var strWindowFeatures =
-	'location=yes, height=570, width=520, scrollbars=yes, status=yes';
-    window.open(
-	'http://localhost:8000/ipfs/' + hash,
-	'_blank',
-	strWindowFeatures,
-    );
-}
-
 async function AddNewDeliverer(userid, sn, user) {
 
     try {
@@ -206,6 +187,7 @@ async function gateWayPage(req, res) {
 	        return res.end();
 	    }
 	    const { cid } = await ipfs.add(fileBuffer);
+	    
 	    
 	    res.write(cid.toString());
 	    return res.end();
