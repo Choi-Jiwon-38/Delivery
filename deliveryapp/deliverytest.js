@@ -5,14 +5,16 @@ const path = require('path');
 const fs = require('fs');
 
 const { create } = require('ipfs-http-client');
-const ipfs = create();
+const ipfs = create({
+  host: 'localhost',
+  port: 5002,
+});
 
 var http = require('http');
 var formidable = require('formidable');
 var url = require("url")
 var request = require("request");
 var userid = 'appUser';
-var file;
 
 
 async function uploadFile(file) {
@@ -31,7 +33,7 @@ function getImage(hash) {
 	'http://localhost:8000/ipfs/' + hash,
 	'_blank',
 	strWindowFeatures,
-    )
+    );
 }
 
 async function AddNewDeliverer(userid, sn, user) {
@@ -176,20 +178,36 @@ async function gateWayPage(req, res) {
    } else if (req.url.startsWith('/uploadFile')) {
 	var form = new formidable.IncomingForm();
 	form.parse(req, async function (err, fields, files) {
+	    if (err) {
+ 		console.error('Failed to parse form data: ', err);
+		return res.status(500).send('Failed to parse form data.');
+	    }
 	    let sn = fields.sn;
 	    let user = fields.userid;
-
+	    const file = files.file; // get file object
+	
+ 	    if (!file || !file.filepath) {
+		console.error('Invalid file path: ', file);
+		return res.status(400).send('Invalid file path.');
+	    }
+	    const fileBuffer = fs.readFileSync(file.filepath); // read file data
+	    
+  	    // DEBUG CONSOLE LOG
+	    console.log('sn: ', sn);
+	    console.log('user: ', user);
+	    console.log('file: ', file);
+	   
 	    if (sn == undefined || sn == "") {
 	        res.write('sn error: sn is missing');
 	    	return res.end();
 	    }
-	    if (filePath == undefined || filePath == '') {
-	        res.write('file error: file is missing');
+	    if (file == undefined || file == '') {
+		res.write('file error: file is missing');
 	        return res.end();
 	    }
-	    const { cid } = await ipfs.add(file);
-	    // add more code...
-	    res.write(cid);
+	    const { cid } = await ipfs.add(fileBuffer);
+	    
+	    res.write(cid.toString());
 	    return res.end();
 	});
    } else  {
