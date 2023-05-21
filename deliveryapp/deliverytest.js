@@ -230,8 +230,8 @@ async function gateWayPage(req, res) {
 		return res.status(500).send('Failed to parse form data.');
 	    }
 	    let sn = fields.sn;
-	    let user = fields.userid;
-	    const file = files.file; // get file object
+	    let user = fields.userid;	// is never used -> undefined 
+	    const file = files.file; 	// get file object
 	
  	    if (!file || !file.filepath) {
 		console.error('Invalid file path: ', file);
@@ -239,10 +239,6 @@ async function gateWayPage(req, res) {
 	    }
 	    const fileBuffer = fs.readFileSync(file.filepath); // read file data
 	    
-  	    // DEBUG CONSOLE LOG
-	    console.log('sn: ', sn);
-	    console.log('user: ', user);
-	    console.log('file: ', file);
 	   
 	    if (sn == undefined || sn == "") {
 	        res.write('sn error: sn is missing');
@@ -254,8 +250,9 @@ async function gateWayPage(req, res) {
 	    }
 	    const { cid } = await ipfs.add(fileBuffer);
 	    
-	    
-	    res.write(cid.toString());
+	    await AddIPFSHash(userid, sn, cid);
+	    res.write(`success addipfshash: ${sn} ${cid}`);
+
 	    return res.end();
 	});
    } else  {
