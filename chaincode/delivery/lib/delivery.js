@@ -33,7 +33,7 @@ class Delivery extends Contract {
     if (!deliveryAsBytes || deliveryAsBytes.length === 0) {
       delivery.sn = sn;
       delivery.deliverer = [cur];
-      delivery.hash = undefined;
+      delivery.hash = '';
       delivery.docType = "delivery";
     } else {
       delivery = JSON.parse(deliveryAsBytes.toString());
@@ -55,7 +55,7 @@ class Delivery extends Contract {
     let delivery = {};
     delivery.sn = sn;
     delivery.deliverer = [cur];
-    delivery.hash = undefined;
+    delivery.hash = '';
     delivery.docType = "delivery";
     await ctx.stub.putState(sn, Buffer.from(JSON.stringify(delivery)));
   }
@@ -67,12 +67,12 @@ class Delivery extends Contract {
       throw new Error(`${sn} does not exist --> cannot add IPFS Hash!`);
     
     delivery = JSON.parse(deliveryAsBytes.toString());
-    if (delivery.hash) {
+    if (delivery.hash != '') {
       console.info(`hash value(${delivery.hash}) is replaced new hash value(${hash})`);
     } else {
       console.info(`new hash value(${hash}) is added`);
     }
-    delivery.hash = hash;
+    delivery.hash = '';
     console.info("============= END : Add IPFS Hash  ===========");
   }
 
@@ -83,12 +83,12 @@ class Delivery extends Contract {
       throw new Error(`${sn} does not exist --> nothing to delete IPFS Hash!`);
 
     delivery = JSON.parse(deliveryAsBytes.toString());
-    if (delivery.hash) {
+    if (delivery.hash != '') {
       console.info(`hash value(${delivery.hash}) is deleted by function`);
     } else {
       console.info('already undefined -->  nothing to delete IPFS Hash!');
     }
-    delivery.hash = undefined;
+    delivery.hash = '';
     console.info("============= END : Delete IPFS Hash  ===========");
   }
 
