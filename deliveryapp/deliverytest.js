@@ -17,6 +17,72 @@ var request = require("request");
 var userid = 'appUser';
 
 
+async function AddIPFSHash(userid, sn, hash) {
+    try {
+        const ccpPath = path.resolve(__dirname, '..', 'connection-org1.json');
+        let ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+        const walletPath = path.join(process.cwd(), 'wallet');
+        const wallet = await Wallets.newFileSystemWallet(walletPath);
+        console.log(`Wallet path: ${walletPath}`);
+
+        const identity = await wallet.get(userid);
+        if (!identity) {
+            console.log('An identity for the user "appUser" does not exist in the wallet');
+            console.log('Run the registerUser.js application before retrying');
+            return;
+        }
+
+        const gateway = new Gateway();
+        await gateway.connect(ccp, { wallet, identity: userid, discovery: { enabled: true, asLocalhost: true } });
+
+        const network = await gateway.getNetwork('mychannel');
+
+        const contract = network.getContract('delivery');
+
+        await contract.submitTransaction('AddIPFSHash', sn, hash);
+        console.log('Transaction has been submitted');
+
+        await gateway.disconnect();
+
+    } catch (error) {
+        console.error(`Failed to submit transaction: ${error}`);
+    }
+}
+
+async function DeleteIPFSHash(userid, sn, hash) {
+    try {
+        const ccpPath = path.resolve(__dirname, '..', 'connection-org1.json');
+        let ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+        const walletPath = path.join(process.cwd(), 'wallet');
+        const wallet = await Wallets.newFileSystemWallet(walletPath);
+        console.log(`Wallet path: ${walletPath}`);
+
+        const identity = await wallet.get(userid);
+        if (!identity) {
+            console.log('An identity for the user "appUser" does not exist in the wallet');
+            console.log('Run the registerUser.js application before retrying');
+            return;
+        }
+
+        const gateway = new Gateway();
+        await gateway.connect(ccp, { wallet, identity: userid, discovery: { enabled: true, asLocalhost: true } });
+
+        const network = await gateway.getNetwork('mychannel');
+
+        const contract = network.getContract('delivery');
+
+        await contract.submitTransaction('DeleteIPFSHash', sn, hash);
+        console.log('Transaction has been submitted');
+
+        await gateway.disconnect();
+
+    } catch (error) {
+        console.error(`Failed to submit transaction: ${error}`);
+    }
+}
+
 async function AddNewDeliverer(userid, sn, user) {
 
     try {
