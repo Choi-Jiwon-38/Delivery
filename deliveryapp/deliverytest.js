@@ -248,10 +248,11 @@ async function gateWayPage(req, res) {
 		res.write('file error: file is missing');
 	        return res.end();
 	    }
-	    const { cid } = await ipfs.add(fileBuffer);
+	    const ipfsFile = await ipfs.add(fileBuffer);
+	    const hash = ipfsFile.cid.toString();
 	    
-	    await AddIPFSHash(userid, sn, cid);
-	    res.write(`success addipfshash: ${sn} ${cid}`);
+	    await AddIPFSHash(userid, sn, hash);
+	    res.write(`success addipfshash: ${sn} ${hash}`);
 
 	    return res.end();
 	});
