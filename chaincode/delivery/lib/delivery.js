@@ -78,7 +78,7 @@ class Delivery extends Contract {
     console.info("============= END : Add IPFS Hash  ===========");
   }
 
-  async DeleteIPFSHash(ctx, sn, hash) {
+  async DeleteIPFSHash(ctx, sn) {
     console.info("============= START : Delete IPFS Hash  ===========");
     let deliveryAsBytes = await ctx.stub.getState(sn);
     if (!deliveryAsBytes || deliveryAsBytes.length === 0)

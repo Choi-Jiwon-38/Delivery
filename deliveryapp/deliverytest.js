@@ -54,7 +54,7 @@ async function AddIPFSHash(userid, sn, hash) {
   }
 }
 
-async function DeleteIPFSHash(userid, sn, hash) {
+async function DeleteIPFSHash(userid, sn) {
   try {
     const ccpPath = path.resolve(__dirname, "..", "connection-org1.json");
     let ccp = JSON.parse(fs.readFileSync(ccpPath, "utf8"));
@@ -83,7 +83,7 @@ async function DeleteIPFSHash(userid, sn, hash) {
 
     const contract = network.getContract("delivery");
 
-    await contract.submitTransaction("DeleteIPFSHash", sn, hash);
+    await contract.submitTransaction("DeleteIPFSHash", sn);
     console.log("Transaction has been submitted");
 
     await gateway.disconnect();
@@ -257,6 +257,26 @@ async function gateWayPage(req, res) {
 
       return res.end();
     });
+  } else if (req.url.startsWith("/deleteFile")) {
+    var form = new formidable.IncomingForm();
+    form.parse(req, async function(err, fields) {
+      if (err) {
+  	console.error("Failed to parse form data: ", err);
+	return res.status(500).send("Failed to parse form data.");
+      }
+
+      let sn = fields.sn;
+     
+      if (sn == undefined || sn == "") {
+        res.write("sn error: sn is missing");
+	return res.end();
+      }
+      
+      await DeleteIPFSHash(userid, sn);
+      res.write(`success deleteipfshash: ${sn}`);
+
+      return res.end();
+    })
   } else {
     var fname = "." + url.parse(req.url).pathname;
     if (url.parse(req.url).pathname == "/") fname = "./deliverymain.html";
