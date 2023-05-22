@@ -72,7 +72,9 @@ class Delivery extends Contract {
     } else {
       console.info(`new hash value(${hash}) is added`);
     }
-    delivery.hash = '';
+    delivery.hash = hash;
+    
+    await ctx.stub.putState(sn, Buffer.from(JSON.stringify(delivery)));
     console.info("============= END : Add IPFS Hash  ===========");
   }
 
@@ -89,6 +91,8 @@ class Delivery extends Contract {
       console.info('already undefined -->  nothing to delete IPFS Hash!');
     }
     delivery.hash = '';
+
+    await ctx.stub.putState(sn, Buffer.from(JSON.stringify(delivery)));
     console.info("============= END : Delete IPFS Hash  ===========");
   }
 
