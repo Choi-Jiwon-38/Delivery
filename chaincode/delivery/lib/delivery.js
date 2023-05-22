@@ -66,7 +66,7 @@ class Delivery extends Contract {
     if (!deliveryAsBytes || deliveryAsBytes.length === 0)
       throw new Error(`${sn} does not exist --> cannot add IPFS Hash!`);
     
-    delivery = JSON.parse(deliveryAsBytes.toString());
+    let delivery = JSON.parse(deliveryAsBytes.toString());
     if (delivery.hash != '') {
       console.info(`hash value(${delivery.hash}) is replaced new hash value(${hash})`);
     } else {
