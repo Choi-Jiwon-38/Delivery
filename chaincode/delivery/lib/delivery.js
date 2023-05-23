@@ -33,7 +33,7 @@ class Delivery extends Contract {
     if (!deliveryAsBytes || deliveryAsBytes.length === 0) {
       delivery.sn = sn;
       delivery.deliverer = [cur];
-      delivery.hash = undefined;
+      delivery.hash = '';
       delivery.docType = "delivery";
     } else {
       delivery = JSON.parse(deliveryAsBytes.toString());
@@ -55,7 +55,7 @@ class Delivery extends Contract {
     let delivery = {};
     delivery.sn = sn;
     delivery.deliverer = [cur];
-    delivery.hash = undefined;
+    delivery.hash = '';
     delivery.docType = "delivery";
     await ctx.stub.putState(sn, Buffer.from(JSON.stringify(delivery)));
   }
@@ -66,29 +66,33 @@ class Delivery extends Contract {
     if (!deliveryAsBytes || deliveryAsBytes.length === 0)
       throw new Error(`${sn} does not exist --> cannot add IPFS Hash!`);
     
-    delivery = JSON.parse(deliveryAsBytes.toString());
-    if (delivery.hash) {
+    let delivery = JSON.parse(deliveryAsBytes.toString());
+    if (delivery.hash != '') {
       console.info(`hash value(${delivery.hash}) is replaced new hash value(${hash})`);
     } else {
       console.info(`new hash value(${hash}) is added`);
     }
     delivery.hash = hash;
+    
+    await ctx.stub.putState(sn, Buffer.from(JSON.stringify(delivery)));
     console.info("============= END : Add IPFS Hash  ===========");
   }
 
-  async DeleteIPFSHash(ctx, sn, hash) {
+  async DeleteIPFSHash(ctx, sn) {
     console.info("============= START : Delete IPFS Hash  ===========");
     let deliveryAsBytes = await ctx.stub.getState(sn);
     if (!deliveryAsBytes || deliveryAsBytes.length === 0)
       throw new Error(`${sn} does not exist --> nothing to delete IPFS Hash!`);
 
-    delivery = JSON.parse(deliveryAsBytes.toString());
-    if (delivery.hash) {
+    var delivery = JSON.parse(deliveryAsBytes.toString());
+    if (delivery.hash != '') {
       console.info(`hash value(${delivery.hash}) is deleted by function`);
     } else {
       console.info('already undefined -->  nothing to delete IPFS Hash!');
     }
-    delivery.hash = undefined;
+    delivery.hash = '';
+
+    await ctx.stub.putState(sn, Buffer.from(JSON.stringify(delivery)));
     console.info("============= END : Delete IPFS Hash  ===========");
   }
 
