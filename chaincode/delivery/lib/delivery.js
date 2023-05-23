@@ -84,7 +84,7 @@ class Delivery extends Contract {
     if (!deliveryAsBytes || deliveryAsBytes.length === 0)
       throw new Error(`${sn} does not exist --> nothing to delete IPFS Hash!`);
 
-    delivery = JSON.parse(deliveryAsBytes.toString());
+    var delivery = JSON.parse(deliveryAsBytes.toString());
     if (delivery.hash != '') {
       console.info(`hash value(${delivery.hash}) is deleted by function`);
     } else {
